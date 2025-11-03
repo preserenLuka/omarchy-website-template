@@ -100,13 +100,12 @@ export const themes: Theme[] = [
     id: "matte-black",
     name: "Matte Black",
     colors: {
-      // ultra-dark, low-gloss with soft neutral accents (black water texture vibe)
-      bg: "rgba(6, 6, 7, 0.88)", // matte near-black
-      bgSecondary: "rgba(14, 14, 16, 0.94)", // slightly lifted panel
-      text: "#EAEAEA", // neutral light gray
-      textSecondary: "#B7B7B7", // softer gray
-      accent: "#98defeff", // icy cyan pop (easy to swap)
-      border: "#242426", // subtle graphite
+      bg: "rgba(6, 6, 7, 0.88)",
+      bgSecondary: "rgba(14, 14, 16, 0.94)",
+      text: "#EAEAEA",
+      textSecondary: "#B7B7B7",
+      accent: "#98defeff",
+      border: "#242426",
     },
     typography: {
       fontFamily: "'JetBrains Mono', monospace",
@@ -114,7 +113,7 @@ export const themes: Theme[] = [
       fontSize: { base: "16px", sm: "14px", lg: "18px", xl: "24px" },
     },
     backgrounds: [
-      "/backgrounds/matte-black/1-matte-black-bg.jpg", // ← your black waves image
+      "/backgrounds/matte-black/1-matte-black-bg.jpg",
       "/backgrounds/matte-black/2-matte-black-bg.jpg",
       "/backgrounds/matte-black/3-matte-black-bg.jpg",
       "/backgrounds/matte-black/4-matte-black-bg.jpg",

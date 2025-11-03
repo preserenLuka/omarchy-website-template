@@ -41,7 +41,7 @@ export default function Stretching() {
   return (
     <div className={s.layout}>
       <Tile title="Knowledge Library" actions={Actions} className={s.lib}>
-        <KnowledgeLibraryTile view={view} tagFilter="stretching" />
+        <KnowledgeLibraryTile view={view} /*tagFilter="stretching"*/ />
       </Tile>
     </div>
   );
