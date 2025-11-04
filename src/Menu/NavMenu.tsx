@@ -1,52 +1,45 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import s from "./navMenu.module.css";
 import type { ReactNode } from "react";
-import {
-  AiOutlineHome,
-  AiOutlineVideoCamera,
-  AiOutlineHeart,
-} from "react-icons/ai";
 
-type Props = { open: boolean; onClose: () => void };
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  items: NavItem[];
+  currentId?: string;
+  openIds?: string[];
+  onSelect: (id: string) => void;
+};
 
-export type NavItem = { label: string; to: string; icon?: ReactNode };
+export type NavItem = { id: string; label: string; icon?: ReactNode };
 
-export const NAV_ITEMS: NavItem[] = [
-  { label: "Home", to: "/", icon: <AiOutlineHome /> },
-  { label: "Exercises", to: "/exercises", icon: <AiOutlineVideoCamera /> },
-  { label: "Stretching", to: "/stretching", icon: <AiOutlineVideoCamera /> },
-  {
-    label: "Injury Prevention",
-    to: "/injury-prevention",
-    icon: <AiOutlineHeart />,
-  },
-];
-
-export default function NavMenu({ open, onClose }: Props) {
+export default function NavMenu({
+  open,
+  onClose,
+  items,
+  currentId,
+  onSelect,
+  openIds,
+}: Props) {
   const navRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  // Začetni index = trenutna ruta (če je najdena), sicer 0
+  // start on current item if provided
   const initialIndex = useMemo(() => {
-    const idx = NAV_ITEMS.findIndex((i) => i.to === location.pathname);
+    if (!currentId) return 0;
+    const idx = items.findIndex((i) => i.id === currentId);
     return idx >= 0 ? idx : 0;
-  }, [location.pathname]);
+  }, [items, currentId]);
 
   const [activeIndex, setActiveIndex] = useState(initialIndex);
 
-  // Ko se modal odpre, poravnaj activeIndex z ruto + fokus
+  // sync when opening
   useEffect(() => {
     if (!open) return;
     setActiveIndex(initialIndex);
-
-    // Postavi fokus na modal (lahko tudi prvi item)
-    const el = navRef.current;
-    if (el) el.focus();
+    navRef.current?.focus();
   }, [open, initialIndex]);
 
-  // Tipke: Esc, ↑/↓, Enter
+  // keyboard handling
   useEffect(() => {
     if (!open) return;
 
@@ -60,25 +53,24 @@ export default function NavMenu({ open, onClose }: Props) {
       if (e.key === "ArrowUp" || e.key === "ArrowDown") {
         e.preventDefault();
         const dir = e.key === "ArrowUp" ? -1 : 1;
-        const next = mod(activeIndex + dir, NAV_ITEMS.length);
+        const next = mod(activeIndex + dir, items.length);
         setActiveIndex(next);
         return;
       }
 
       if (e.key === "Enter") {
         e.preventDefault();
-        const item = NAV_ITEMS[activeIndex];
+        const item = items[activeIndex];
         if (item) {
-          navigate(item.to);
+          onSelect(item.id);
           onClose();
         }
-        return;
       }
     };
 
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open, activeIndex, navigate, onClose]);
+  }, [open, activeIndex, items, onClose, onSelect]);
 
   if (!open) return null;
 
@@ -87,11 +79,10 @@ export default function NavMenu({ open, onClose }: Props) {
   };
 
   const handleClick = (idx: number) => {
-    const item = NAV_ITEMS[idx];
-    if (item) {
-      navigate(item.to);
-      onClose();
-    }
+    const item = items[idx];
+    if (!item) return;
+    onSelect(item.id);
+    onClose();
   };
 
   return (
@@ -106,7 +97,7 @@ export default function NavMenu({ open, onClose }: Props) {
       >
         <header className={s.header}>
           <h2 id="navMenuTitle" className={s.title}>
-            Navigation
+            Open tile
           </h2>
           <button className={s.close} onClick={onClose} aria-label="Close">
             ×
@@ -115,29 +106,25 @@ export default function NavMenu({ open, onClose }: Props) {
 
         <nav className={s.body} aria-label="Main">
           <ul className={s.list} role="menu">
-            {NAV_ITEMS.map((it, idx) => {
+            {items.map((it, idx) => {
               const isActive = idx === activeIndex;
-              const isCurrentRoute = it.to === location.pathname;
+              const isOpen = openIds?.includes(it.id);
 
               return (
-                <li key={it.to} role="none">
+                <li key={it.id} role="none">
                   <button
                     role="menuitem"
                     className={[
                       s.item,
                       isActive ? s.itemActive : "",
-                      isCurrentRoute ? s.itemCurrent : "",
+                      isOpen ? s.itemCurrent : "",
                     ].join(" ")}
                     onMouseEnter={() => setActiveIndex(idx)}
                     onClick={() => handleClick(idx)}
                   >
-                    {"icon" in it && it.icon && (
-                      <span className={s.itemIcon}>{it.icon}</span>
-                    )}
+                    {it.icon && <span className={s.itemIcon}>{it.icon}</span>}
                     <span className={s.itemLabel}>{it.label}</span>
-                    {isCurrentRoute && (
-                      <span className={s.currentBadge}>current</span>
-                    )}
+                    {isOpen && <span className={s.currentBadge}>open</span>}
                   </button>
                 </li>
               );
@@ -145,8 +132,8 @@ export default function NavMenu({ open, onClose }: Props) {
           </ul>
 
           <div className={s.help}>
-            <kbd>↑</kbd>/<kbd>↓</kbd> izberi &nbsp;|&nbsp; <kbd>Enter</kbd>{" "}
-            potrdi &nbsp;|&nbsp; <kbd>Esc</kbd> zapri
+            <kbd>↑</kbd>/<kbd>↓</kbd> select &nbsp;|&nbsp; <kbd>Enter</kbd> open
+            &nbsp;|&nbsp; <kbd>Esc</kbd> close
           </div>
         </nav>
       </div>

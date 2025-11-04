@@ -1,5 +1,4 @@
 // app/src/hooks/useKeyboardShortcut.ts
-
 import { useEffect } from "react";
 
 type KeyCombo = {
@@ -7,19 +6,28 @@ type KeyCombo = {
   shift?: boolean;
   alt?: boolean;
   key: string;
+  exact?: boolean; // if true, no extra modifiers allowed
 };
 
 export function useKeyboardShortcut(combo: KeyCombo, callback: () => void) {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      const ctrlMatch = combo.ctrl
-        ? e.ctrlKey || e.metaKey
-        : !e.ctrlKey && !e.metaKey;
-      const shiftMatch = combo.shift ? e.shiftKey : !e.shiftKey;
-      const altMatch = combo.alt ? e.altKey : !e.altKey;
       const keyMatch = e.key.toLowerCase() === combo.key.toLowerCase();
 
-      if (ctrlMatch && shiftMatch && altMatch && keyMatch) {
+      // required modifiers
+      if (combo.ctrl && !(e.ctrlKey || e.metaKey)) return;
+      if (combo.shift && !e.shiftKey) return;
+      if (combo.alt && !e.altKey) return;
+
+      // if exact: forbid extra modifiers
+      if (combo.exact) {
+        const extraCtrl = !combo.ctrl && (e.ctrlKey || e.metaKey);
+        const extraShift = !combo.shift && e.shiftKey;
+        const extraAlt = !combo.alt && e.altKey;
+        if (extraCtrl || extraShift || extraAlt) return;
+      }
+
+      if (keyMatch) {
         e.preventDefault();
         callback();
       }

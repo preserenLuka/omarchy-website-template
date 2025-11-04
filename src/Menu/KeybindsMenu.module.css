@@ -11,7 +11,7 @@
 
 .modal {
   width: min(480px, 92vw);
-  height: min(46vh, 480px);
+  max-height: 56vh;
   background: rgba(22, 24, 28, 0.95);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -19,7 +19,7 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
-  outline: none;
+  overflow: hidden;
 }
 
 .header {
@@ -59,6 +59,8 @@
   padding: 10px 14px 14px;
   display: grid;
   grid-template-rows: 1fr auto;
+  gap: 10px;
+  min-height: 200px;
 }
 
 .list {
@@ -67,52 +69,27 @@
   padding: 6px 0 0;
   display: grid;
   gap: 8px;
+  overflow-y: auto;
 }
 
 .item {
   width: 100%;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: 10px;
+  align-items: center;
   padding: 10px 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  color: #fff;
   background: transparent;
-  cursor: pointer;
 }
+
 .item:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-.itemActive {
-  outline: 2px solid #ffffff40;
-}
-.itemCurrent {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .itemLabel {
   font-weight: 500;
-}
-.currentBadge {
-  margin-left: auto; /* push to far right */
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.03);
-  opacity: 0.9;
-}
-
-.help {
-  font-size: 12px;
-  opacity: 0.85;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 8px;
-  margin-top: 8px;
 }
 
 kbd {
@@ -122,15 +99,13 @@ kbd {
   padding: 1px 6px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.06);
+  font-size: 12px;
 }
-.item {
-  display: grid;
-  grid-template-columns: 20px 1fr auto;
-  gap: 10px;
-  align-items: center;
-}
-.itemIcon {
-  display: grid;
-  place-items: center;
-  opacity: 0.9;
+
+.help {
+  font-size: 12px;
+  opacity: 0.75;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 6px;
+  margin-top: 6px;
 }

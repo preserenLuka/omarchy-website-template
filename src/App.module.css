@@ -1,20 +1,39 @@
+:root {
+  /* theme vars */
+  --color-bg: #0f1115;
+  --color-bgSecondary: rgba(20, 20, 26, 0.6);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  --font-size-base: 14px;
+  --font-weight-normal: 400;
+
+  /* scrollbar color can be overridden by theme */
+  --scrollbar-thumb: rgba(255, 255, 255, 0.16);
+}
+
 .root {
   min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-normal);
-  color: var(--color-fg, #e8eaed);
-  background: var(--color-bg, #0f1115);
+  color: #e8eaed;
+  background: var(--color-bg);
 }
 
+/* top bar */
 .nav {
-  border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
-  background-color: var(--color-bgSecondary, rgba(20, 20, 26, 0.6));
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bgSecondary);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
   z-index: 50;
+  /* height ~56px (12px top/bottom + buttons) */
 }
 
 .navInner {
@@ -25,8 +44,6 @@
 }
 
 .brand {
-  color: inherit;
-  text-decoration: none;
   font-weight: 600;
   letter-spacing: 0.2px;
 }
@@ -39,7 +56,7 @@
 .navBtn {
   appearance: none;
   background: transparent;
-  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.12));
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: inherit;
   padding: 8px 12px;
   border-radius: 10px;
@@ -49,8 +66,32 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
+/* main area */
 .main {
-  max-width: 85%;
-  margin: 0 auto;
-  padding: 24px;
+  width: 100%;
+  /* nav ≈ 56px */
+  height: calc(100vh - 56px);
+  overflow: hidden; /* don’t scroll the whole page */
+  padding: 24px 0;
+}
+
+/* tiles layout */
+.tilesGrid {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  padding: 0 4%; /* your 4% breathing space */
+  align-items: stretch;
+  /* each row gets at least 260px but can stretch */
+  grid-auto-rows: minmax(260px, 1fr);
+}
+
+/* when no tiles are open */
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  opacity: 0.6;
+  margin-top: 60px;
+  font-size: 0.9rem;
 }
